@@ -1,0 +1,385 @@
+/* Assignment UI styles */
+.qanmc-assignment-ui {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.qanmc-assignment-ui label {
+    font-size: 13px;
+    margin-bottom: 2px;
+}
+
+.qanmc-assigned-users {
+    width: 100%;
+    min-width: 180px;
+    max-width: 350px;
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px solid #dcdcde;
+    font-size: 13px;
+    background: #f6f7f7;
+}
+
+.qanmc-user-search {
+    width: 100%;
+    max-width: 350px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #dcdcde;
+    font-size: 13px;
+    margin-top: 2px;
+    background: #fff;
+}
+
+.qanmc-delete-note.button {
+    padding: 0 10px;
+    line-height: 2;
+    align-self: flex-start;
+    margin-top: 8px;
+    margin-bottom: 0;
+    background: #f6f7f7;
+    color: #b32d2e;
+    border: 1px solid #b32d2e;
+    border-radius: 3px;
+    font-weight: 500;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.qanmc-delete-note.button:hover {
+    background: #fff0f1;
+    color: #d63638;
+    border-color: #d63638;
+}
+
+.qanmc-share-note.button {
+    padding: 0 10px;
+    line-height: 2;
+    align-self: flex-start;
+    margin-top: 8px;
+    margin-bottom: 0;
+    background: #f6f7f7;
+    color: #2271b1;
+    border: 1px solid #2271b1;
+    border-radius: 3px;
+    font-weight: 500;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    height: 30px;
+    /* Standard button height */
+    display: inline-flex;
+    align-items: center;
+}
+
+.qanmc-share-note.button:hover {
+    background: #f0f6fc;
+    color: #135e96;
+    border-color: #135e96;
+}
+
+/**
+ * Quick Admin Notes - Styles (restored full-featured version)
+ */
+
+#qanmc-notes-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 12px;
+    min-height: 40px;
+}
+
+.qanmc-note {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 6px;
+    padding: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    position: relative;
+    transition: all 0.2s ease;
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.qanmc-note:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    border-color: #8c8f94;
+}
+
+.qanmc-note textarea.qanmc-note-text {
+    width: 100%;
+    height: 120px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    padding: 8px 32px 8px 8px;
+    resize: vertical;
+    transition: border-color 0.2s ease;
+}
+
+
+.qanmc-note textarea.qanmc-note-text:focus {
+    border-color: #2271b1;
+    outline: none;
+    box-shadow: 0 0 0 1px #2271b1;
+}
+
+.qanmc-todo-list {
+    margin-bottom: 8px;
+    padding-left: 0;
+    list-style: none;
+}
+
+/* (Removed: user assignment multiselect CSS) */
+/* .qanmc-user-multiselect, .qanmc-ms-selected, .qanmc-ms-placeholder, .qanmc-ms-dropdown, .qanmc-ms-option, .qanmc-ms-tag, .qanmc-ms-tag-remove, .qanmc-ms-search { */
+/*   Assignment multiselect styles removed */
+/* } */
+
+
+.qanmc-todo-checkbox {
+    margin-right: 6px;
+}
+
+.qanmc-todo-text[contenteditable="true"] {
+    border-bottom: 1px dashed #2271b1;
+    min-width: 40px;
+    padding: 2px 4px;
+    cursor: text;
+    outline: none;
+    user-select: text;
+}
+
+.qanmc-todo-text[contenteditable="true"]:focus {
+    background: #eaf6ff;
+    border-bottom: 1px solid #2271b1;
+}
+
+.qanmc-add-todo-item {
+    align-self: flex-end;
+    margin-bottom: 8px;
+}
+
+.qanmc-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+#qanmc-status {
+    font-size: 13px;
+    font-style: italic;
+}
+
+.qanmc-close-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: transparent;
+    border: none;
+    color: #b32d2e;
+    font-size: 20px;
+    line-height: 1;
+    padding: 0 6px;
+    cursor: pointer;
+    z-index: 2;
+    transition: color 0.2s;
+}
+
+.qanmc-close-btn:hover {
+    color: #d63638;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 782px) {
+    .qanmc-note {
+        width: 100%;
+    }
+}
+
+.qanmc-close-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: transparent;
+    border: none;
+    color: #b32d2e;
+    font-size: 20px;
+    line-height: 1;
+    padding: 0 6px;
+    cursor: pointer;
+    z-index: 2;
+    transition: color 0.2s;
+}
+
+#qanmc-notes-container {
+    margin-bottom: 12px;
+    min-height: 40px;
+}
+
+.qanmc-note {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 6px;
+    padding: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    margin-bottom: 12px;
+    position: relative;
+}
+
+.qanmc-note textarea.qanmc-note-text {
+    width: 100%;
+    height: 120px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    padding: 8px 32px 8px 8px;
+    resize: vertical;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
+}
+
+.qanmc-todo-list {
+    margin-bottom: 8px;
+    padding-left: 0;
+    list-style: none;
+}
+
+.qanmc-todo-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.qanmc-todo-checkbox {
+    margin-right: 6px;
+}
+
+.qanmc-todo-text[contenteditable="true"] {
+    border-bottom: 1px dashed #2271b1;
+    min-width: 40px;
+    padding: 2px 4px;
+    cursor: text;
+    outline: none;
+    user-select: text;
+}
+
+.qanmc-todo-text[contenteditable="true"]:focus {
+    background: #eaf6ff;
+    border-bottom: 1px solid #2271b1;
+}
+
+.qanmc-add-todo-item {
+    align-self: flex-end;
+    margin-bottom: 8px;
+}
+
+/* Actions */
+.qanmc-note-actions {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    align-items: center;
+}
+
+.qanmc-shared-badge {
+    color: #646970;
+    font-size: 12px;
+    font-style: italic;
+    background: #f0f0f1;
+    padding: 2px 8px;
+    border-radius: 4px;
+    cursor: help;
+}
+
+/* Share Modal/Popover */
+.qanmc-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 100000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.qanmc-modal {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    width: 300px;
+    max-width: 90%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.qanmc-modal h3 {
+    margin-top: 0;
+}
+
+.qanmc-user-list {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+}
+
+.qanmc-user-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.qanmc-user-item label {
+    margin-left: 8px;
+    cursor: pointer;
+}
+
+.qanmc-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+
+.qanmc-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+#qanmc-status {
+    font-size: 13px;
+    font-style: italic;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 782px) {
+    .qanmc-note {
+        width: 100%;
+    }
+}
