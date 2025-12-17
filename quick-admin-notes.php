@@ -3,7 +3,7 @@
  * Plugin Name: Quick Admin Notes
  * Plugin URI: https://breathwp.com/quick-admin-notes
  * Description: Add multiple note cards to your WordPress dashboard with add/edit/delete support. Perfect for quick reminders, to-dos, and team messages.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Requires at least: 5.0
  * Requires PHP: 7.0
  * Author: Nebu John
@@ -118,13 +118,13 @@ function qanmc_render_widget() {
             $checked = !empty($item['checked']) ? 'checked' : '';
             $text = isset($item['text']) ? esc_html($item['text']) : '';
             echo '<li class="qanmc-todo-item" data-idx="' . intval($idx) . '">';
-            echo '<input type="checkbox" class="qanmc-todo-checkbox" ' . $checked . '> ';
-            echo '<span class="qanmc-todo-text" contenteditable="true">' . $text . '</span> ';
-            echo '<button class="qanmc-delete-todo-item button-link">' . __('Delete', 'quick-admin-notes') . '</button>';
+            echo '<input type="checkbox" class="qanmc-todo-checkbox" ' . checked( $value, 1, false ) . '> ';
+            echo '<span class="qanmc-todo-text" contenteditable="true">' . esc_html( $text ) . '</span> ';
+            echo '<button class="qanmc-delete-todo-item button-link">' . esc_html__('Delete', 'quick-admin-notes') . '</button>';
             echo '</li>';
         }
         echo '</ul>';
-        echo '<button class="qanmc-add-todo-item button">' . __('Add item', 'quick-admin-notes') . '</button>';
+        echo '<button class="qanmc-add-todo-item button">' . esc_html__('Add item', 'quick-admin-notes') . '</button>';
         echo '</div>';
     }
 
@@ -137,7 +137,7 @@ function qanmc_render_widget() {
         return strtotime($a->post_date) <=> strtotime($b->post_date);
     });
     if (empty($text_notes)) {
-        echo '<p class="qanmc-empty-state">' . __('No notes yet. Click "Add New Note" to get started!', 'quick-admin-notes') . '</p>';
+        echo '<p class="qanmc-empty-state">' . esc_html__('No notes yet. Click "Add New Note" to get started!', 'quick-admin-notes') . '</p>';
     }
     foreach ($text_notes as $post) {
         // Visibility check
@@ -155,15 +155,15 @@ function qanmc_render_widget() {
         // serialize shared_with for JS data attr
         $shared_json = esc_attr(json_encode($shared_with));
         
-        echo '<div class="qanmc-note" data-id="' . esc_attr($note_id) . '" data-type="text" data-shared="' . $shared_json . '">';
+        echo '<div class="qanmc-note" data-id="' . esc_attr($note_id) . '" data-type="text" data-shared="' . esc_attr( $shared_json ). '">';
         echo '<textarea class="qanmc-note-text" placeholder="' . esc_attr__('Type your note here...', 'quick-admin-notes') . '">' . esc_textarea($post->post_content) . '</textarea>';
         echo '<div class="qanmc-note-actions">';
         // Only author can share/delete
         if ($author_id === $current_user_id) {
-            echo '<button class="qanmc-share-note button button-link" title="' . esc_attr__('Share this note', 'quick-admin-notes') . '">' . __('Share', 'quick-admin-notes') . '</button>';
-            echo '<button class="qanmc-delete-note button button-link" title="' . esc_attr__('Delete this note', 'quick-admin-notes') . '">' . __('Delete', 'quick-admin-notes') . '</button>';
+            echo '<button class="qanmc-share-note button button-link" title="' . esc_attr__('Share this note', 'quick-admin-notes') . '">' . esc_html__('Share', 'quick-admin-notes') . '</button>';
+            echo '<button class="qanmc-delete-note button button-link" title="' . esc_attr__('Delete this note', 'quick-admin-notes') . '">' . esc_html__('Delete', 'quick-admin-notes') . '</button>';
         } else {
-             echo '<span class="qanmc-shared-badge" title="' . esc_attr__('Shared by ', 'quick-admin-notes') . get_the_author_meta('display_name', $author_id) . '">Using Shared Note</span>';
+             echo '<span class="qanmc-shared-badge" title="' . esc_attr__('Shared by ', 'quick-admin-notes') . esc_attr( get_the_author_meta('display_name', $author_id) ) . '">Using Shared Note</span>';
         }
         echo '</div>'; // end actions
         echo '</div>';
@@ -171,7 +171,7 @@ function qanmc_render_widget() {
 
     echo '</div>';
     echo '<p class="qanmc-actions">';
-    echo '<button id="qanmc-add-note" class="button button-primary">' . __('Add New Note', 'quick-admin-notes') . '</button> ';
+    echo '<button id="qanmc-add-note" class="button button-primary">' . esc_html__('Add New Note', 'quick-admin-notes') . '</button> ';
     echo '<span id="qanmc-status"></span>';
     echo '</p>';
 }
@@ -196,7 +196,14 @@ function qanmc_save_note() {
 
 
     if ( 'todo' === $type ) {
-        $items = isset($_POST['items']) ? $_POST['items'] : [];
+        $items = [];
+        if ( isset( $_POST['items'] ) && is_array( $_POST['items'] ) ) {
+            $items = array_map(
+                'sanitize_text_field',
+                wp_unslash( $_POST['items'] )
+            );
+        }
+
         $sanitized = [];
         if ( is_array($items) ) {
             foreach ( $items as $item ) {
@@ -210,7 +217,7 @@ function qanmc_save_note() {
         update_post_meta($note_id, 'qanmc_todo_items', $sanitized);
         wp_send_json_success(__('To-do saved', 'quick-admin-notes'));
     } else {
-        $text = isset($_POST['text']) ? sanitize_textarea_field($_POST['text']) : '';
+        $text = isset($_POST['text']) ? sanitize_textarea_field(wp_unslash( $_POST['text'])): '';
         $post = [
             'ID' => $note_id,
             'post_content' => $text,
