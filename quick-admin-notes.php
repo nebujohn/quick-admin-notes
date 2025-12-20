@@ -116,10 +116,10 @@ function qanmc_render_widget() {
         echo '<ul class="qanmc-todo-list">';
         foreach ($items as $idx => $item) {
             $checked = !empty($item['checked']) ? 'checked' : '';
-            $text = isset($item['text']) ? esc_html($item['text']) : '';
+            $text = isset($item['text']) ? $item['text'] : '';
             echo '<li class="qanmc-todo-item" data-idx="' . intval($idx) . '">';
-            echo '<input type="checkbox" class="qanmc-todo-checkbox" ' . checked( $value, 1, false ) . '> ';
-            echo '<span class="qanmc-todo-text" contenteditable="true">' . esc_html( $text ) . '</span> ';
+            echo '<input type="checkbox" class="qanmc-todo-checkbox" ' . esc_attr($checked) . '> ';
+            echo '<span class="qanmc-todo-text" contenteditable="true">' . esc_html($text) . '</span> ';
             echo '<button class="qanmc-delete-todo-item button-link">' . esc_html__('Delete', 'quick-admin-notes') . '</button>';
             echo '</li>';
         }
@@ -146,16 +146,20 @@ function qanmc_render_widget() {
         $shared_with = get_post_meta($post->ID, 'qanmc_shared_with', true);
         if (!is_array($shared_with)) $shared_with = [];
         
+
+
         // Show if: Author OR in shared list
-        if ($author_id !== $current_user_id && !in_array($current_user_id, $shared_with)) {
+        $visible = qanmc_is_note_visible($author_id, $current_user_id, $shared_with);
+
+        if (!$visible) {
             continue;
         }
         
         $note_id = $post->ID;
         // serialize shared_with for JS data attr
-        $shared_json = esc_attr(json_encode($shared_with));
+        $shared_json = json_encode($shared_with);
         
-        echo '<div class="qanmc-note" data-id="' . esc_attr($note_id) . '" data-type="text" data-shared="' . esc_attr( $shared_json ). '">';
+        echo '<div class="qanmc-note" data-id="' . esc_attr($note_id) . '" data-type="text" data-shared="' . esc_attr($shared_json) . '">';
         echo '<textarea class="qanmc-note-text" placeholder="' . esc_attr__('Type your note here...', 'quick-admin-notes') . '">' . esc_textarea($post->post_content) . '</textarea>';
         echo '<div class="qanmc-note-actions">';
         // Only author can share/delete
@@ -163,7 +167,7 @@ function qanmc_render_widget() {
             echo '<button class="qanmc-share-note button button-link" title="' . esc_attr__('Share this note', 'quick-admin-notes') . '">' . esc_html__('Share', 'quick-admin-notes') . '</button>';
             echo '<button class="qanmc-delete-note button button-link" title="' . esc_attr__('Delete this note', 'quick-admin-notes') . '">' . esc_html__('Delete', 'quick-admin-notes') . '</button>';
         } else {
-             echo '<span class="qanmc-shared-badge" title="' . esc_attr__('Shared by ', 'quick-admin-notes') . esc_attr( get_the_author_meta('display_name', $author_id) ) . '">Using Shared Note</span>';
+             echo '<span class="qanmc-shared-badge" title="' . esc_attr__('Shared by ', 'quick-admin-notes') . esc_attr(get_the_author_meta('display_name', $author_id)) . '">Using Shared Note</span>';
         }
         echo '</div>'; // end actions
         echo '</div>';
@@ -196,14 +200,8 @@ function qanmc_save_note() {
 
 
     if ( 'todo' === $type ) {
-        $items = [];
-        if ( isset( $_POST['items'] ) && is_array( $_POST['items'] ) ) {
-            $items = array_map(
-                'sanitize_text_field',
-                wp_unslash( $_POST['items'] )
-            );
-        }
-
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+        $items = isset($_POST['items']) ? wp_unslash($_POST['items']) : [];
         $sanitized = [];
         if ( is_array($items) ) {
             foreach ( $items as $item ) {
@@ -217,7 +215,7 @@ function qanmc_save_note() {
         update_post_meta($note_id, 'qanmc_todo_items', $sanitized);
         wp_send_json_success(__('To-do saved', 'quick-admin-notes'));
     } else {
-        $text = isset($_POST['text']) ? sanitize_textarea_field(wp_unslash( $_POST['text'])): '';
+        $text = isset($_POST['text']) ? sanitize_textarea_field(wp_unslash($_POST['text'])) : '';
         $post = [
             'ID' => $note_id,
             'post_content' => $text,
@@ -312,4 +310,35 @@ function qanmc_update_sharing() {
 register_uninstall_hook(__FILE__, 'qanmc_uninstall');
 function qanmc_uninstall() {
     delete_option('qanmc_notes');
+}
+
+/**
+ * Helper: Check note visibility
+ * 
+ * @param int $owner_id
+ * @param int $current_user_id
+ * @param array $shared_with_ids
+ * @return bool
+ */
+function qanmc_is_note_visible($owner_id, $current_user_id, $shared_with_ids) {
+    $owner_id = (int) $owner_id;
+    $current_user_id = (int) $current_user_id;
+    
+    // 1. Author always sees their note
+    if ($owner_id === $current_user_id) {
+        return true;
+    }
+    
+    // 2. Check if in shared list (strict type check)
+    if (!is_array($shared_with_ids)) {
+        return false;
+    }
+    
+    foreach ($shared_with_ids as $shared_id) {
+        if ((int)$shared_id === $current_user_id) {
+            return true;
+        }
+    }
+    
+    return false;
 }
